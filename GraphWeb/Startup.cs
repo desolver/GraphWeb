@@ -40,6 +40,8 @@ namespace GraphWeb
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+            app.UseCors("http://127.0.0.1:5500/");
         }
     }
 }
