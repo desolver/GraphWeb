@@ -13,6 +13,12 @@ const useConfigGraph = () => {
                 message.success("Конфигурация модели прошла успешно, моделирование запущено")
                 setLoading(false)
             })
+            .catch((error) => {
+                message.error("Произошла ошибка: " + error.message)
+                console.log(error)
+
+                setLoading(false)
+            })
     }
 
     return { configure, loading }

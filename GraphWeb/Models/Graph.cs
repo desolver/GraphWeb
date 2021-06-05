@@ -16,19 +16,20 @@ namespace GraphWeb.Models
         //     }
         // }
 
-        public static Node[] Nodes;
-        private readonly TaskFactory _taskFactory;
+        public Node[] Nodes { get; set; }
 
-        public Graph(Node[] nodes)
-        {
-            Nodes = nodes;
-            _taskFactory = new TaskFactory();
-        }
+        public int ElapsedTime { get; set; }
 
-        public static void ConfigureNewGraph(ConfigurationDto config)
+        public int WorkingNodeCount => Nodes.Count(n => n.State == NodeState.Working);
+        public int ServiceNodeCount => Nodes.Count(n => n.State == NodeState.Service);
+        public int DefectiveNodeCount => Nodes.Count(n => n.State == NodeState.Defective);
+        public int ResourceCount => Nodes.Sum(n => n.ResourceCount);
+        
+        public void ConfigureNewGraph(ConfigurationDto config)
         {
             Nodes = new Node[config.NodeCount];
-
+            ElapsedTime = 0;
+            
             var workingNodeIndex = config.WorkingNodeCount;
             var serviceNodeIndex = config.WorkingNodeCount + config.ServiceNodeCount;
             var defectiveNodeIndex = config.WorkingNodeCount + config.ServiceNodeCount + config.DefectiveNodeCount;
@@ -52,6 +53,15 @@ namespace GraphWeb.Models
                     config.ResourceCount, config.ServicePrice);
         }
 
-        public IEnumerable<Node> GetNodes() => Nodes;
+        public Node[] NextIteration()
+        {
+            ElapsedTime++;
+            foreach (var node in Nodes)
+            {
+                node.NextIteration();
+            }
+
+            return Nodes;
+        }
     }
 }

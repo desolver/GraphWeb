@@ -1,24 +1,25 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 
 import useNextState from "../hooks/useNextState"
 import Graph from "react-graph-vis"
+import { Row, Col, Typography } from "antd"
 
-const ModelGraph = ({ isStartedModel, nodesInColumn, onModelChange }) => {
+const { Text } = Typography
+
+const ModelGraph = ({ isStartedModel, nodesInColumn, time, interval }) => {
     const { data, fetch } = useNextState()
+    const [elapsedTime, setElapsedTime] = useState(0)
 
     useEffect(() => {
-        if (isStartedModel) {
+        if (isStartedModel && elapsedTime < time) {
             const intervalId = setInterval(() => {
+                setElapsedTime(elapsedTime + 1)
                 fetch()
-            }, 1000)
+            }, interval)
 
             return () => clearInterval(intervalId)
         }
-    }, [fetch, isStartedModel])
-
-    useEffect(() => {
-        onModelChange(data.nodes || [])
-    }, [data, onModelChange])
+    }, [fetch, setElapsedTime, isStartedModel, elapsedTime, interval, time])
 
     const nodes = data.nodes || []
 
@@ -57,20 +58,76 @@ const ModelGraph = ({ isStartedModel, nodesInColumn, onModelChange }) => {
             hierarchical: true,
         },
         physics: false,
+        interaction: {
+            dragNodes: false,
+            selectable: false,
+        },
+        nodes: {
+            shape: "dot",
+            size: 28,
+            font: {
+                size: 24,
+                color: "#222",
+            },
+            borderWidth: 2,
+        },
+        edges: {
+            width: 2,
+        },
     }
 
     return (
-        <Graph
-            style={{
-                width: "100%",
-                height: "600px",
-                background: "#f5f5f5",
-                borderTop: "solid 1px rgba(0,0,0,.1)",
-                borderBottom: "solid 1px rgba(0,0,0,.1)",
-            }}
-            graph={{ nodes, edges }}
-            options={options}
-        />
+        <Row style={{ marginBottom: "50px" }}>
+            <div style={{ width: "80vw", margin: "20px auto" }}>
+                <Row gutter={[20, 20]} justify="space-between">
+                    <Col span={8}>
+                        <Text>
+                            Кол-во работающих узлов:{" "}
+                            <Text type="success" strong>
+                                {data.workingNodeCount || 0}
+                            </Text>
+                        </Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text>
+                            Кол-во узлов в сервисе:{" "}
+                            <Text type="warning" strong>
+                                {data.serviceNodeCount || 0}
+                            </Text>
+                        </Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text>
+                            Кол-во неисправных узлов:{" "}
+                            <Text type="danger" strong>
+                                {data.defectiveNodeCount || 0}
+                            </Text>
+                        </Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text>
+                            Ресурсов осталось: <Text strong>{data.resourceCount || 0}</Text>
+                        </Text>
+                    </Col>
+                    <Col span={8}>
+                        <Text>
+                            Прошедшее время: <Text strong>{data.elapsedTime || 0}</Text>
+                        </Text>
+                    </Col>
+                </Row>
+            </div>
+            <Graph
+                style={{
+                    width: "100%",
+                    height: "600px",
+                    background: "#f5f5f5",
+                    borderTop: "solid 1px rgba(0,0,0,.1)",
+                    borderBottom: "solid 1px rgba(0,0,0,.1)",
+                }}
+                graph={{ nodes, edges }}
+                options={options}
+            />
+        </Row>
     )
 }
 

@@ -7,11 +7,18 @@ namespace GraphWeb.Controllers
     [Route("config")]
     public class ConfigurationController
     {
+        private readonly Graph _graph;
+
+        public ConfigurationController(Graph graph)
+        {
+            _graph = graph;
+        }
+        
         [Route("new")]
         [HttpPost]
         public void ConfigureGraph([FromBody] ConfigurationDto config)
         {
-            Graph.ConfigureNewGraph(config);
+            _graph.ConfigureNewGraph(config);
         }
     }
 }
