@@ -20,6 +20,7 @@ namespace GraphWeb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddCors();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "GraphWeb", Version = "v1"}); });
         }
 
@@ -32,16 +33,21 @@ namespace GraphWeb
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GraphWeb v1"));
             }
-
             app.UseHttpsRedirection();
+            
+            app.UseCors(config => config
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin());
 
             app.UseRouting();
 
             app.UseAuthorization();
-
+            
+            
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
-            app.UseCors("http://127.0.0.1:5500/");
+            
         }
     }
 }

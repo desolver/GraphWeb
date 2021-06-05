@@ -12,7 +12,7 @@ namespace GraphWeb.Models
 
         private readonly Random _random;
         private readonly NodeTimer _timer;
-        private const double Interval = 500d;
+        private const double Interval = 1000d;
 
         private int _resourceCount = 100;
         private readonly int _servicePrice = 1;
