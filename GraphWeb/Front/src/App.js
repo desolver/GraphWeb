@@ -3,7 +3,7 @@ import useConfigGraph from "./hooks/useConfigGraph"
 import ModelGraph from "./components/ModelGraph"
 import { Layout, Row, Col, Button, Spin, Form, InputNumber, Typography, Space, Divider } from "antd"
 import { LoadingOutlined } from "@ant-design/icons"
-
+import { exportToDocx } from "./helpers/exportHelper"
 import "./App.css"
 Spin.setDefaultIndicator(<LoadingOutlined style={{ fontSize: 24 }} spin />)
 
@@ -15,6 +15,9 @@ const App = () => {
     const [isStart, setIsStart] = useState(false)
     const [isConfig, setIsConfig] = useState(false)
     const [nodesInColumn, setNodesInCoumn] = useState(5)
+
+    const [startConfig, setStartConfig] = useState()
+    const [currentState, setCurrentState] = useState()
 
     const [time, setTime] = useState(100)
     const [interval, setInterval] = useState(1000)
@@ -37,11 +40,18 @@ const App = () => {
 
         setNodesInCoumn(Math.round(Math.sqrt(nodeCount)))
 
-        configure(params).then(() => setIsConfig(true))
+        configure(params).then(() => {
+            setStartConfig(params)
+            setIsConfig(true)
+        })
     }
 
     const startHandler = () => {
         setIsStart(true)
+    }
+
+    const changeModel = (data) => {
+        setCurrentState(data)
     }
 
     return (
@@ -158,24 +168,35 @@ const App = () => {
                     </Row>
                     <Divider />
                     <Form.Item>
-                        <Space>
-                            <Button disabled={isConfig} loading={loading} type="primary" htmlType="submit">
-                                Сконфигурировать модель
-                            </Button>
+                        <Row justify="space-between">
+                            <Space>
+                                <Button disabled={isConfig} loading={loading} type="primary" htmlType="submit">
+                                    Сконфигурировать модель
+                                </Button>
 
-                            <Button disabled={!isConfig || isStart} type="primary" onClick={() => startHandler()}>
-                                Старт
-                            </Button>
+                                <Button disabled={!isConfig || isStart} type="primary" onClick={() => startHandler()}>
+                                    Старт
+                                </Button>
 
-                            <Button disabled={!isStart} type="primary" danger onClick={() => setIsStart(false)}>
-                                Стоп
+                                <Button disabled={!isStart} type="primary" danger onClick={() => setIsStart(false)}>
+                                    Стоп
+                                </Button>
+                            </Space>
+                            <Button type="primary" onClick={() => exportToDocx(startConfig, currentState)}>
+                                Экспорт в docx
                             </Button>
-                        </Space>
+                        </Row>
                     </Form.Item>
                 </Form>
             </Row>
 
-            <ModelGraph nodesInColumn={nodesInColumn} isStartedModel={isStart} time={time} interval={interval} />
+            <ModelGraph
+                nodesInColumn={nodesInColumn}
+                isStartedModel={isStart}
+                time={time}
+                interval={interval}
+                changeModel={(data) => changeModel(data)}
+            />
         </Layout.Content>
     )
 }

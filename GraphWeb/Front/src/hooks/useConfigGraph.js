@@ -10,7 +10,7 @@ const useConfigGraph = () => {
         return getApiInstanse()
             .post(CONFIG_URL, params)
             .then(() => {
-                message.success("Конфигурация модели прошла успешно, моделирование запущено")
+                message.success("Конфигурация модели прошла успешно")
                 setLoading(false)
             })
             .catch((error) => {

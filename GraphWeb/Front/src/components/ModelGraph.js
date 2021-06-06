@@ -6,7 +6,7 @@ import { Row, Col, Typography } from "antd"
 
 const { Text } = Typography
 
-const ModelGraph = ({ isStartedModel, nodesInColumn, time, interval }) => {
+const ModelGraph = ({ isStartedModel, nodesInColumn, time, interval, changeModel }) => {
     const { data, fetch } = useNextState()
     const [elapsedTime, setElapsedTime] = useState(0)
 
@@ -20,6 +20,10 @@ const ModelGraph = ({ isStartedModel, nodesInColumn, time, interval }) => {
             return () => clearInterval(intervalId)
         }
     }, [fetch, setElapsedTime, isStartedModel, elapsedTime, interval, time])
+
+    useEffect(() => {
+        changeModel(data)
+    }, [data, changeModel])
 
     const nodes = data.nodes || []
 
