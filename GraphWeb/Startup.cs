@@ -17,16 +17,19 @@ namespace GraphWeb
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
             services.AddCors();
             services.AddSingleton<Graph>();
+            
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "wwwroot";
+            });   
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "GraphWeb", Version = "v1"}); });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -34,22 +37,24 @@ namespace GraphWeb
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GraphWeb v1"));
+                
+                app.UseCors(config => config
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowAnyOrigin());
             }
             app.UseHttpsRedirection();
             
-            app.UseCors(config => config
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowAnyOrigin());
-
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseDefaultFiles();
             
+            app.UseSpaStaticFiles();
+            app.UseSpa(spa => spa.Options.SourcePath = "wwwrooot");
             
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-
-            
         }
     }
 }

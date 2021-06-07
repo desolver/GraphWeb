@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.6" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     </ItemGroup>
 
@@ -28,6 +29,10 @@
       <_ContentIncludedByDefault Remove="Front\graph-frontend\package-lock.json" />
       <_ContentIncludedByDefault Remove="Front\graph-frontend\package.json" />
       <_ContentIncludedByDefault Remove="Front\graph-frontend\public\manifest.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot" />
     </ItemGroup>
 
 </Project>
