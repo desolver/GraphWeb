@@ -11,8 +11,6 @@ namespace GraphWeb.Models
         
         public int ResourceCount { get; private set; }
         
-        //public float FailureProbability { get; private set; }
-
         private static int _id;
         private readonly Random _random;
 
@@ -47,7 +45,6 @@ namespace GraphWeb.Models
             ElapsedTime++;
             if (ResourceCount <= 0 && State != NodeState.Working)
             {
-                //_timer.Stop();
                 Console.WriteLine($"Нода {Id}: РЕСУРСА НЕ ХВАТАЕТ");
                 return;
             }

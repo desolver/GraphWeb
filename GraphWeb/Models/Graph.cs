@@ -7,15 +7,6 @@ namespace GraphWeb.Models
 {
     public class Graph
     {
-        // public static float FailureProbability
-        // {
-        //     get
-        //     {
-        //         var probability = Nodes.Aggregate(1f, (current, node) => current * node.FailureProbability);
-        //         return probability;
-        //     }
-        // }
-
         public Node[] Nodes { get; set; }
 
         public int ElapsedTime { get; set; }

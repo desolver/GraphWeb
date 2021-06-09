@@ -2,11 +2,20 @@ import React, { useEffect, useState } from "react"
 
 import useNextState from "../hooks/useNextState"
 import Graph from "react-graph-vis"
-import { Row, Col, Typography } from "antd"
+import { Row, Col, Typography, Button, Space } from "antd"
 
 const { Text } = Typography
 
-const ModelGraph = ({ isStartedModel, nodesInColumn, time, interval, changeModel }) => {
+const ModelGraph = ({
+    isStartedModel,
+    isConfig,
+    nodesInColumn,
+    time,
+    interval,
+    changeModel,
+    startModel,
+    stopModel,
+}) => {
     const { data, fetch } = useNextState()
     const [elapsedTime, setElapsedTime] = useState(0)
 
@@ -117,6 +126,17 @@ const ModelGraph = ({ isStartedModel, nodesInColumn, time, interval, changeModel
                         <Text>
                             Прошедшее время: <Text strong>{data.elapsedTime || 0}</Text>
                         </Text>
+                    </Col>
+                    <Col span={8}>
+                        <Space>
+                            <Button disabled={!isConfig || isStartedModel} type="primary" onClick={startModel}>
+                                Старт
+                            </Button>
+
+                            <Button disabled={!isStartedModel} type="primary" danger onClick={stopModel}>
+                                Стоп
+                            </Button>
+                        </Space>
                     </Col>
                 </Row>
             </div>
